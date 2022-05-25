@@ -8,7 +8,6 @@ import reportRouter from './routes/reports.js';
 config();
 const app = express();
 
-// parse application/json
 app.use(bodyParser.json());
 
 mongoose.connect(process.env.DATABASE_URL);
