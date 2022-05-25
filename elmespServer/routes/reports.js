@@ -28,10 +28,10 @@ router.get('/', async (request, response) => {
                 {$unwind: {path: '$events'}},
                 //{$match: {'events.eventType': {$gt: 3} }}
                 {$group: {
-                           _id: '$events.eventType',
-                           events: { $push: "$events" },
-                           count: { $count: { } }
-                         }}
+                    _id: '$events.eventType',
+                    events: { $push: "$events" },
+                    count: { $count: { } }
+                    }}
             ]);
 
         response.json(reports);
@@ -49,9 +49,9 @@ router.get('/viewer', async (request, response) => {
             {$unwind: {path: '$events'}},
             //{$match: {'events.eventType': {$gt: 3} }}
             {$group: {
-                   _id: '$events.eventType',
-                   events: { $push: "$events" },
-                   count: { $count: { } }
+                _id: '$events.eventType',
+                events: { $push: "$events" },
+                count: { $count: { } }
                  }}
         ]);
 
@@ -83,7 +83,7 @@ router.get('/viewer', async (request, response) => {
         .selectAll('rect')
         .data(data.sort((a, b) => a._id - b._id))
         .join('rect')
-            .attr('x', (data, index) => x(index))
+            .attr('x', (_data, index) => x(index))
             .attr('y', (data) => y(data.count))
             .attr('height', data => y(0) - y(data.count))
             .attr('width', x.bandwidth())
