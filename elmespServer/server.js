@@ -21,8 +21,8 @@ const db = mongoose.connection;
 db.on('error', error => console.error(error));
 db.once('open', ()=> console.log('Connected to DB'));
 
-app.use('/elmesp-reports', reportRouter);
-app.set('view engine', 'pug');
+app.use('/api/reports', reportRouter);
+//app.set('view engine', 'pug');
 
 // Setup a static folder for client-side scripts
 app.use(express.static(path.join(__dirname, 'public')));

@@ -15,7 +15,7 @@ const EVENT_TYPE_NAMES = [
     'TOP_SPEED'
     ];
 
-router.get('/', async (request, response) => {
+router.get('/', async (_, response) => {
     console.log('GET received');
 
     //response.send('Hello there!');
@@ -40,7 +40,7 @@ router.get('/', async (request, response) => {
     }
 });
 
-router.get('/viewer', async (request, response) => {
+router.get('/viewer', async (_, response) => {
     console.log('Preparing VIEWER');
 
     const data = await Report
