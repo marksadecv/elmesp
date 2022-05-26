@@ -4,11 +4,48 @@
     <meta charset="UTF-8">
     <title>Elmesp dashboard</title>
 </head>
+
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+</style>
+
 <body>
     <script src='https://d3js.org/d3.v4.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <h3>Dashboard</h3>
+    <h2>Select a car</h2>
+
+    <table>
+        <thead>
+            <th>Car plate</th>
+        </thead>
+        <tbody>
+            <tr><td>Test 1</td></tr>
+            <tr><td>Test 2</td></tr>
+            <tr><td>Test 3</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Select a report</h2>
+    <table>
+        <thead>
+            <th>Report id</th>
+            <th>Date</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>qwerty123</td>
+                <td>20-05-2022</td>
+            </tr>
+            <tr>
+                <td>qwerty456</td>
+                <td>20-05-2022</td>
+            </tr>
+        </tbody>
+    </table>
+
     <svg id="svg1" width='800' height='400'></svg>
 
     <script>
