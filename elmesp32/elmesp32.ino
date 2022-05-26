@@ -55,7 +55,7 @@ const char* password = "AsquilinFantasma2022";
 //const char* ssid = "Poco Mk";
 //const char* password = "lechuga.123";
 
-const char* REPORTS_ENDPOINT = "http://192.168.227.75/elmesp-reports";
+const char* REPORTS_ENDPOINT = "http://192.168.68.113/api/reports";
 
 const int INPUT_MODE_PIN_1 = 34;
 const int INPUT_MODE_PIN_2 = 35;
@@ -370,7 +370,7 @@ void postRequest(){
 }
 
 String buildPostJson(){
-  String json = "{\"car-id\": \"JPV8523\", \"events\": [";
+  String json = "{\"carId\": \"JHZ9036\", \"events\": [";
 
   json += "{\"timestamp\": 15, \"event-type\": \"FUEL_LEVEL\", \"fuel-level\": 74}]}";
   
@@ -381,7 +381,7 @@ String buildPostJson(){
 String readMemoryEvents(){
   Serial.println("STATUS: Reading events from memory...");
   
-  String fullJson= "{\"carId\": \"JPV8523\", \"events\": [";
+  String fullJson= "{\"carId\": \"JHZ9036\", \"events\": [";
 
   // Read first event
   String nextEventJson = readNextEvent();
