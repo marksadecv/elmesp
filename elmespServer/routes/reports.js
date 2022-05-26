@@ -6,8 +6,6 @@ const router = express.Router();
 router.get('/', async (_, response) => {
     console.log('GET received');
 
-    //response.send('Hello there!');
-
     try {
         //const reports = await Report.find();
         const reports = await Report
