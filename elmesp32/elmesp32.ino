@@ -44,16 +44,22 @@ const char *MODE_NAMES[4] = {
   "WIFI"
 };
 
-int currentMode = WIFI;
+// The operation mode is MONITOR by default. It might be changed later depending
+// on digital inputs
+int currentMode = MONITOR;
 
 // Wifi credentials (ESP32 does not support 5GHz WiFi networks)
-//const char* ssid = "THE RISING SUN";
-//const char* password = "AsquilinFantasma2022";
+const char* ssid = "THE RISING SUN";
+const char* password = "AsquilinFantasma2022";
 
-const char* ssid = "Poco Mk";
-const char* password = "lechuga.123";
+//const char* ssid = "Poco Mk";
+//const char* password = "lechuga.123";
 
 const char* REPORTS_ENDPOINT = "http://192.168.227.75/elmesp-reports";
+
+const int INPUT_MODE_PIN_1 = 34;
+const int INPUT_MODE_PIN_2 = 35;
+
 
 void setup() {
   // Initialize USB serial communication -----------------------------------
@@ -66,17 +72,32 @@ void setup() {
   Serial.println("STATUS: 30 seconds to set-up");
   delay(30 * 1000);
 
+  // Setup input pins and read the operation mode -------------------------------------
+  pinMode(INPUT_MODE_PIN_1, INPUT);
+  pinMode(INPUT_MODE_PIN_2, INPUT);
+
+  int inputMode1State = digitalRead(INPUT_MODE_PIN_1);
+  int inputMode2State = digitalRead(INPUT_MODE_PIN_2);
+
+  if(inputMode1State == HIGH){
+    currentMode = MONITOR;
+  }
+
+  if(inputMode2State == HIGH){
+    currentMode = WIFI;
+  }
+
+  // Log current mode ----------------------------------------------
+  Serial.print("STATUS: Current mode: ");
+  Serial.println(MODE_NAMES[currentMode]);
+
   // Initialize EEPROM -------------------------------------------------------------------------------
   Serial.println("STATUS: Initializing EEPROM...");
   EEPROM.begin(EEPROM_SIZE);
 
-  // Log current mode
-  Serial.print("STATUS: Current mode: ");
-  Serial.println(MODE_NAMES[currentMode]);
-
   
   
-  // Hacky operations --------------------------------------------------------
+  // Main operations --------------------------------------------------------
   switch(currentMode){
     case MEMORY_READ:
       //readMemory(30, 100);
