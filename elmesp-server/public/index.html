@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html ng-app="elmesp-angular-app" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Elmesp dashboard</title>
+</head>
+
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <script src='https://d3js.org/d3.v4.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+
+    <script type="text/javascript" src="Testcontroller.js"></script>
+    
+
+    <h2>Select a car</h2>
+
+    <table>
+        <thead>
+            <th>Car plate</th>
+        </thead>
+        <tbody>
+            <tr><td>Test 1</td></tr>
+            <tr><td>Test 2</td></tr>
+            <tr><td>Test 3</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Select a report</h2>
+    <table>
+        <thead>
+            <th>Report id</th>
+            <th>Date</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>qwerty123</td>
+                <td>20-05-2022</td>
+            </tr>
+            <tr>
+                <td>qwerty456</td>
+                <td>20-05-2022</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <svg id="svg1" width='800' height='400'></svg>
+
+    <script>
+        const EVENT_TYPE_NAMES = [
+            'TIME_INITIALIZATION',
+            'TIME_REGISTER',
+            'FUEL_LEVEL',
+            'SUDDEN_ACCELERATION',
+            'SUDDEN_BRAKE',
+            'TOP_SPEED'
+        ];
+    </script>
+
+    
+
+    <!--script>
+        const data = [80, 120, 60, 150, 200];
+        const barHeight = 20;
+        const bar = d3.select('svg')
+            .selectAll('rect')
+            .data(data)
+            .enter()
+            .append('rect')
+            .attr('width', function(d) {  return d; })
+            .attr('height', barHeight - 1)
+            .attr('transform', function(d, i) {
+                return "translate(0," + i * barHeight + ")";
+            });
+    </script-->
+
+    <script>
+        
+
+    </script>
+    
+    <svg id="svg2" width='800' height='400'></svg>
+
+    <script>
+        axios.get('/api/reports').then((response) => {
+            const data = response.data;
+            console.log(data);
+
+            const dataset1 = [
+                [1,1], [20,20], [24,36],
+                [32, 50], [40, 70], [50, 100],
+                [55, 106], [65, 123], [73, 130],
+                [78, 134], [83, 136], [89, 138],
+                [100, 140]
+            ];
+
+            // Draw a chart
+            const svg2 = d3.select("#svg2"),
+                margin = 50,
+                width = svg2.attr("width") - margin,
+                height = svg2.attr("height") - margin;
+
+            const xScale = d3.scaleLinear().domain([0, 100]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([0, 200]).range([height, 0]);
+
+            const g = svg2.append("g")
+                .attr("transform", "translate(" + 60 + "," + 20 + ")");
+
+            // Title
+            svg2.append('text')
+                .attr('x', width/2 + 100)
+                .attr('y', 20)
+                .attr('text-anchor', 'middle')
+                .style('font-family', 'Helvetica')
+                .style('font-size', 20)
+                .text('History');
+
+            // X label
+            svg2.append('text')
+                .attr('x', width/2 + 100)
+                .attr('y', height + margin)
+                .attr('text-anchor', 'middle')
+                .style('font-family', 'Helvetica')
+                .style('font-size', 12)
+                .text('Timestamp');
+
+            // Y label
+            svg2.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('transform', 'translate(20,' + height/2 + ')rotate(-90)')
+                .style('font-family', 'Helvetica')
+                .style('font-size', 12)
+                .text('Event type');
+
+            // Step 6
+            g.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(xScale));
+            
+            g.append("g")
+                .call(d3.axisLeft(yScale));
+
+            // Step 7
+            svg2.append('g')
+                .selectAll("dot")
+                .data(dataset1)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) { return xScale(d[0]); } )
+                .attr("cy", function (d) { return yScale(d[1]); } )
+                .attr("r", 3)
+                .attr("transform", "translate(" + margin + "," + "0)")
+                .style("fill", "#CC0000");
+
+        });
+
+    </script>
+
+    <div ng-controller="TestController">
+        <h2>The value: {{theValue}}</h2>
+
+        <table>
+            <tr ng-repeat="chip in chips">
+                <td>{{ chip.name }}</td>
+                <td>{{ chip.price }}</td>
+            </tr>
+        </table>
+
+        <table>
+            <tr *ngFor="carId in carIdList">
+                <td>{{ carId }}</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
