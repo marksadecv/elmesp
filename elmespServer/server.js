@@ -27,4 +27,4 @@ app.use('/api/reports', reportRouter);
 // Setup a static folder for client-side scripts
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(80, () => console.log('Server started'));
+app.listen(3001, () => console.log('Server started'));
