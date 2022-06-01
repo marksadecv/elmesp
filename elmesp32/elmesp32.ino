@@ -57,8 +57,9 @@ const char* password = "AsquilinFantasma2022";
 
 const char* REPORTS_ENDPOINT = "http://192.168.68.113/api/reports";
 
-const int INPUT_MODE_PIN_1 = 34;
-const int INPUT_MODE_PIN_2 = 35;
+const int OPERATION_MODE_PIN_1 = 34;
+const int OPERATION_MODE_PIN_2 = 35;
+const int LED_PIN = 32;
 
 
 void setup() {
@@ -68,22 +69,24 @@ void setup() {
     delay(1000);
   }
 
-  // 30 seconds to allow new code loading ----------------------
-  Serial.println("STATUS: 30 seconds to set-up");
-  delay(30 * 1000);
+  // Setup input pins -------------------------------------
+  pinMode(OPERATION_MODE_PIN_1, INPUT);
+  pinMode(OPERATION_MODE_PIN_2, INPUT);
+  pinMode(LED_PIN, OUTPUT);
 
-  // Setup input pins and read the operation mode -------------------------------------
-  pinMode(INPUT_MODE_PIN_1, INPUT);
-  pinMode(INPUT_MODE_PIN_2, INPUT);
+  // 10 seconds to allow new code loading ----------------------
+  Serial.println("STATUS: 10 seconds to set-up");
+  waitSecondsBlinking(10);
 
-  int inputMode1State = digitalRead(INPUT_MODE_PIN_1);
-  int inputMode2State = digitalRead(INPUT_MODE_PIN_2);
+  // Read the operation mode ----------------------------------------
+  int operationMode1State = digitalRead(OPERATION_MODE_PIN_1);
+  int operationMode2State = digitalRead(OPERATION_MODE_PIN_2);
 
-  if(inputMode1State == HIGH){
+  if(operationMode1State == HIGH){
     currentMode = MONITOR;
   }
 
-  if(inputMode2State == HIGH){
+  if(operationMode2State == HIGH){
     currentMode = WIFI;
   }
 
@@ -94,8 +97,6 @@ void setup() {
   // Initialize EEPROM -------------------------------------------------------------------------------
   Serial.println("STATUS: Initializing EEPROM...");
   EEPROM.begin(EEPROM_SIZE);
-
-  
   
   // Main operations --------------------------------------------------------
   switch(currentMode){
@@ -200,6 +201,8 @@ void connectToElm(){
   
   if(connected) {
     Serial.println("STATUS: Connected Succesfully!");
+    // Turn on the LED permanently when the Bluetooth conecction completed
+    digitalWrite(LED_PIN, HIGH);
   } else {
     while(!SerialBT.connected(10000)) {
       Serial.println("STATUS: Failed to connect. Make sure remote device is available and in range, then restart app."); 
@@ -310,12 +313,28 @@ void readMemory(int bytesQuantity, int rateMillis){
 void connectToWifi() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
+
   Serial.print("STATUS: Connecting to WiFi ..");
-  
+
+  // LED management -------------------------------------------------------
+  bool ledState = false;
+
   while(WiFi.status() != WL_CONNECTED) {
     Serial.print('.');
-    delay(1000);
+
+    if (ledState){
+      digitalWrite(LED_PIN, HIGH);
+    } else {
+      digitalWrite(LED_PIN, LOW);
+    }
+
+    // Revert the LED state to keep it blinknig while connecting
+    ledState = !ledState;
+    delay(500);
   }
+
+  // Turn on the LED permanently when the connection is successful
+  digitalWrite(LED_PIN, HIGH);
 
   Serial.println();
 
@@ -341,6 +360,28 @@ void getRequest(){
     String payload = http.getString();
     Serial.println(payload);
   }
+}
+
+void waitSecondsBlinking(int secondsToWait){
+  // LED management -------------------------------------------------------
+  bool ledState = false;
+
+  for (int i=0; i<secondsToWait; i++){
+    Serial.print('.');
+
+    if (ledState){
+      digitalWrite(LED_PIN, HIGH);
+    } else {
+      digitalWrite(LED_PIN, LOW);
+    }
+
+    // Revert the LED state to keep it blinknig while connecting
+    ledState = !ledState;
+    delay(1000);
+  }
+
+  // Turn off the LED permanently when the wait completed
+  digitalWrite(LED_PIN, LOW);
 }
 
 void postRequest(){
