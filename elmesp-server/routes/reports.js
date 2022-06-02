@@ -8,11 +8,26 @@ router.get('/', async (request, response) => {
     console.log('GET received');
 
     const queryObject = url.parse(request.url, true).query;
+    const fields = queryObject.fields;
+    delete queryObject.fields;
+
     console.log(queryObject);
 
+    // Build fields query object
+    const fieldsQueryObject = {};
+    if (fields !== undefined){
+        fields.split(',').forEach(field => {
+            fieldsQueryObject[field] = 1;
+        });
+
+        console.log(fieldsQueryObject);
+    }
+
     try {
-        // Get all reports (Filter by query parameter if any)
-        const reports = await Report.find(queryObject);
+        // Get all reports 
+        // - Filter by query parameter if any
+        // - Return only the requested fields
+        const reports = await Report.find(queryObject, fieldsQueryObject);
 
         response.json(reports);
     } catch(error) {

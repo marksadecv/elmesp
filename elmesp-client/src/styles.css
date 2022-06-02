@@ -1,0 +1,19 @@
+/* html > body > #root > div {
+    height: 100vh;
+} */
+
+.elmesp-container {
+    padding: 20px;
+}
+
+.chart-container {
+    height: 50vh;
+}
+
+.div1 {
+    background-color: rgba(53, 53, 53, 0.075);
+}
+
+.div2 {
+    background-color: rgba(31, 30, 30, 0.075);
+}
