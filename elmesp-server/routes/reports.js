@@ -1,6 +1,7 @@
 import express from 'express';
 import Report from '../models/report.js';
 import url from 'url';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
@@ -68,24 +69,50 @@ router.get('/distinct', async (request, response) => {
     }
 });
 
-// Get a given report events 
-router.get('/events', async (request, response) => {
+
+
+// Get a given report stats 
+router.get('/stats', async (request, response) => {
     const queryObject = url.parse(request.url, true).query;
     console.log(queryObject);
 
     try{
-        const reports = await Report
+        // Get basic fields (timestamp, carId)
+        const report = await Report.find(queryObject, {timestamp:1, carId: 1});
+
+
+        // Obtain the events summary count
+        const reportEvents = await Report
             .aggregate([
-                {$match: queryObject},
+                {$match: {_id: mongoose.Types.ObjectId(queryObject._id)}},
                 {$unwind: {path: '$events'}},
                 {$group: {
                     _id: '$events.eventType',
-                    events: { $push: "$events" },
                     count: { $count: { } }
                 }}
             ]);
         
-        response.json(reports);
+
+        // Get the max timestamp to get the duration of the report
+        const maxTimestampReport = await Report
+            .aggregate([
+                {$match: {_id: mongoose.Types.ObjectId(queryObject._id)}},
+                {$unwind: {path: '$events'}},
+                {$group: {
+                    _id: '*',
+                    maxQuantity: {$max: "$events.timestamp"}
+                }}
+            ]);
+
+        // Build the response with the gathered data
+        response.json(Object.assign({}, {
+            date: report[0].timestamp, 
+            carId: report[0].carId
+        }, {
+            events: reportEvents
+        }, {
+            duration: maxTimestampReport[0].maxQuantity
+        }));
     } catch(error) {
         response.status(500).json({message: error.message});
     }

@@ -20,8 +20,9 @@ const EVENT_TYPES = [
 
 function App() {
   const [data, setData] = useState(loadCars);
-  const [reports_data, setReports] = useState([])
-  const [events_data, setEvents] = useState([])
+  const [reports_data, setReports] = useState([]);
+  const [events_data, setEvents] = useState([]);
+  const [stats_data, setStats] = useState(loadReportStats);
   
   function loadCars() {
     fetch('/api/reports/distinct?field=carId')
@@ -41,6 +42,7 @@ function App() {
       .then(body => {setReports(body)});
   }
 
+
   function loadReportEvents(reportId) {
     const reportsEndpoint = '/api/reports?_id=' + reportId + '&fields=events,timestamp';
 
@@ -59,6 +61,31 @@ function App() {
 
         // Plot the events history
         drawChart('#events-history-chart', '', eventsHistoryData);
+      });
+  }
+
+  function loadReportStats(reportId) {
+    const reportsEndpoint = '/api/reports/stats?_id=' + reportId;
+
+    fetch(reportsEndpoint)
+      .then(result => result.json())
+      .then(body => {
+        if (body.events){
+          // Accumulate the events count
+          let allEventsCount = 0;
+          body.events.forEach(eventStats => {
+            allEventsCount += eventStats.count;
+          });
+
+          const mappedBody = {
+            date: body.date,
+            carId: body.carId,
+            duration: body.duration,
+            eventsNumber: allEventsCount
+          };
+
+          setStats(mappedBody);
+        }
       });
   }
 
@@ -126,6 +153,7 @@ function App() {
               title='Select a report'
               onRowClicked={(row, _) => {
                 loadReportEvents(row._id);
+                loadReportStats(row._id);
               }}
             />
           </div>
@@ -142,7 +170,7 @@ function App() {
                       className="form-control" 
                       id="summary-carId-input" 
                       readOnly={true} 
-                      value="carId">
+                      value={stats_data && stats_data.carId}>
                     </input>
                   </div>
 
@@ -152,17 +180,17 @@ function App() {
                       className="form-control" 
                       id="summary-date-input"
                       readOnly={true} 
-                      value="date">
+                      value={stats_data && stats_data.date}>
                     </input>
                   </div>
 
                   <div className="col-md-6">
-                    <label htmlFor="summary-date-input" className="form-label">Time range</label>
+                    <label htmlFor="summary-date-input" className="form-label">Duration</label>
                     <input type="text" 
                       className="form-control" 
-                      id="summary-timeRange-input"
+                      id="summary-duration-input"
                       readOnly={true}
-                      value="timeRange">
+                      value={stats_data && stats_data.duration}>
                     </input>
                   </div>
 
@@ -172,7 +200,7 @@ function App() {
                       className="form-control" 
                       id="summary-eventsNumber-input"
                       readOnly={true} 
-                      value="eventsNumber">
+                      value={stats_data && stats_data.eventsNumber}>
                     </input>
                   </div>
 
