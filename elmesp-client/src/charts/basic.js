@@ -1,22 +1,62 @@
 import * as d3 from 'd3';
 
+const EVENT_TYPES_MAP = {
+    "1": {
+        label: 'TIME_INITIALIZATION',
+        value: '1',
+        color: '#cc0000'
+    },
+    "2": {
+        label: 'TIME_REGISTER',
+        value: '2',
+        color: '#0000cc'
+    },
+    "3": {
+        label: 'FUEL_LEVEL',
+        value: '3',
+        color: '#8fce00'
+    },
+    "4": {
+        label: 'SUDDEN_ACCELERATION',
+        value: '4',
+        color: '#f1c232'
+    },
+    "5": {
+        label: 'SUDDEN_BRAKE',
+        value: '5',
+        color: '#733f83'
+    },
+    "6": {
+        label: 'TOP_SPEED',
+        value: '6',
+        color: '#2986cc'
+    }
+};
+
+// Mapping example [30, 'TOP_SPEED', '#CC0000']
+function eventMapper([timestamp, eventType]){
+    //return [timestamp, EVENT_TYPES_MAP[eventType].label, EVENT_TYPES_MAP[eventType].color];
+    return {
+        timestamp: timestamp,
+        label: EVENT_TYPES_MAP[eventType].label,
+        color: EVENT_TYPES_MAP[eventType].color
+    };
+}
+
 export function drawChart(selector, title, data){
-    // const dataset1 = [
-    //     [1,1], [20,20], [24,36],
-    //     [32, 50], [40, 70], [50, 100],
-    //     [55, 106], [65, 123], [73, 130],
-    //     [78, 134], [83, 136], [89, 138],
-    //     [100, 140]
-    // ];
+    const mappedData = data.map(eventMapper);
+    const eventTypeNames = Object.values(EVENT_TYPES_MAP).map(eventDefinition => eventDefinition.label);
 
     // Draw a chart
-    const svg2 = d3.select(selector);
-    const margin = 50;
-    const width = width = svg2.attr("width") - margin;
-    const height = svg2.attr("height") - margin;
+    const svg2 = d3.select(selector),
+        margin = 50,
+        width = svg2.attr("width") - margin,
+        height = svg2.attr("height") - margin;
 
     const xScale = d3.scaleLinear().domain([0, 1000]).range([0, width]);
-    const yScale = d3.scaleLinear().domain([0, 7]).range([height, 0]);
+    const yScale = d3.scaleBand()
+        .domain(eventTypeNames)
+        .range([height, 0]);
 
     const g = svg2.append("g")
         .attr("transform", "translate(" + 60 + "," + 20 + ")");
@@ -39,14 +79,6 @@ export function drawChart(selector, title, data){
         .style('font-size', 12)
         .text('Timestamp');
 
-    // Y label
-    svg2.append('text')
-        .attr('text-anchor', 'middle')
-        .attr('transform', 'translate(20,' + height/2 + ')rotate(-90)')
-        .style('font-family', 'Helvetica')
-        .style('font-size', 12)
-        .text('Event type');
-
     // Step 6
     g.append("g")
         .attr("transform", "translate(0," + height + ")")
@@ -58,12 +90,12 @@ export function drawChart(selector, title, data){
     // Step 7
     svg2.append('g')
         .selectAll("dot")
-        .data(data)
+        .data(mappedData)
         .enter()
         .append("circle")
-        .attr("cx", function (d) { return xScale(d[0]); } )
-        .attr("cy", function (d) { return yScale(d[1]); } )
+        .attr("cx", (d) => { return xScale(d.timestamp); } )
+        .attr("cy", (d) => { return yScale(d.label); } )
         .attr("r", 3)
         .attr("transform", "translate(" + margin + "," + margin + ")")
-        .style("fill", "#CC0000");
+        .style("fill", (d) => d.color)
 }
