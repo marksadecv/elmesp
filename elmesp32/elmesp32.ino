@@ -58,7 +58,6 @@ const char* password = "AsquilinFantasma2022";
 const char* REPORTS_ENDPOINT = "http://192.168.68.113/api/reports";
 
 const int OPERATION_MODE_PIN_1 = 34;
-const int OPERATION_MODE_PIN_2 = 35;
 const int LED_PIN = 32;
 
 
@@ -71,7 +70,6 @@ void setup() {
 
   // Setup input pins -------------------------------------
   pinMode(OPERATION_MODE_PIN_1, INPUT);
-  pinMode(OPERATION_MODE_PIN_2, INPUT);
   pinMode(LED_PIN, OUTPUT);
 
   // 10 seconds to allow new code loading ----------------------
@@ -80,13 +78,10 @@ void setup() {
 
   // Read the operation mode ----------------------------------------
   int operationMode1State = digitalRead(OPERATION_MODE_PIN_1);
-  int operationMode2State = digitalRead(OPERATION_MODE_PIN_2);
 
-  if(operationMode1State == HIGH){
+  if(operationMode1State == LOW){
     currentMode = MONITOR;
-  }
-
-  if(operationMode2State == HIGH){
+  } else {
     currentMode = WIFI;
   }
 
