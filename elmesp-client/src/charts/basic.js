@@ -10,10 +10,10 @@ export function drawChart(selector, title, data){
     // ];
 
     // Draw a chart
-    const svg2 = d3.select(selector),
-        margin = 50,
-        width = svg2.attr("width") - margin,
-        height = svg2.attr("height") - margin;
+    const svg2 = d3.select(selector);
+    const margin = 50;
+    const width = width = svg2.attr("width") - margin;
+    const height = svg2.attr("height") - margin;
 
     const xScale = d3.scaleLinear().domain([0, 1000]).range([0, width]);
     const yScale = d3.scaleLinear().domain([0, 7]).range([height, 0]);
