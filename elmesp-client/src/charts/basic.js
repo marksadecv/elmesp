@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-export function drawChart(title, data){
+export function drawChart(selector, title, data){
     // const dataset1 = [
     //     [1,1], [20,20], [24,36],
     //     [32, 50], [40, 70], [50, 100],
@@ -10,7 +10,7 @@ export function drawChart(title, data){
     // ];
 
     // Draw a chart
-    const svg2 = d3.select("#svg1"),
+    const svg2 = d3.select(selector),
         margin = 50,
         width = svg2.attr("width") - margin,
         height = svg2.attr("height") - margin;

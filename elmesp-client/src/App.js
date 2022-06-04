@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useEffect, useState } from 'react';
+import React, {useState} from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DataTable from 'react-data-table-component';
@@ -7,9 +7,21 @@ import './styles.css';
 
 import { drawChart } from './charts/basic';
 
+
+const EVENT_TYPES = [
+  {name: 'No-Op', value: 0},
+  {name: 'TIME INITIALIZATION', value: 1},
+  {name: 'TIME REGISTER', value: 2},
+  {name: 'FUEL LEVEL', value: 3},
+  {name: 'SUDDEN ACCELERATION', value: 4},
+  {name: 'SUDDEN BRAKE', value: 5},
+  {name: 'TOP SPEED', value: 6}
+];
+
 function App() {
   const [data, setData] = useState(loadCars);
   const [reports_data, setReports] = useState([])
+  const [events_data, setEvents] = useState([])
   
   function loadCars() {
     fetch('/api/reports/distinct?field=carId')
@@ -41,27 +53,39 @@ function App() {
           return [event.timestamp, event.eventType];
         });
 
-        drawChart('History - ' + body[0].timestamp, eventsHistoryData);
+
+        // Populate summary events table
+        setEvents(body[0].events)
+
+        // Plot the events history
+        drawChart('#events-history-chart', '', eventsHistoryData);
       });
   }
-  
 
-
-  const dataset = [
-    [10, 30, 40, 20],
-    [10, 40, 30, 20, 50, 10],
-    [60, 30, 40, 20, 30]
-  ];
-
-  let i = 0;
-
-  const changeChart = () => {
-    drawChart(400, 600, dataset[i++]);
-
-    if (i === dataset.length){
-      i = 0;
+  function parameter1Mapper(eventObject){
+    switch(eventObject.eventType){
+      case 3:
+        return eventObject.fuelLevel;
+      case 4:
+      case 5:
+        return eventObject.initialSpeed;
+      case 6:
+        return eventObject.topSpeed;
+      default:
+        return '-';
     }
   }
+
+  function parameter2Mapper(eventObject){
+    switch(eventObject.eventType){
+      case 4:
+      case 5:
+        return eventObject.finalSpeed;
+      default:
+        return '-';
+    }
+  }
+  
 
   const columns = [
     {name: 'Plates', selector: row => row.plates, sortable: true}
@@ -70,6 +94,13 @@ function App() {
   const report_columns = [
     {name: 'Plates', selector: row => row.carId, sortable: true},
     {name: 'Date', selector: row => row.timestamp, sortable: true}
+  ];
+
+  const event_columns = [
+    {name: 'Timestamp', selector: row => row.timestamp, sortable: true},
+    {name: 'Event type', selector: row => EVENT_TYPES[row.eventType].name, sortable: true},
+    {name: 'P1', selector: row => parameter1Mapper(row), sortable: true},
+    {name: 'P2', selector: row => parameter2Mapper(row), sortable: true}
   ];
 
   // Page render ---------------------
@@ -94,18 +125,72 @@ function App() {
               data={reports_data}
               title='Select a report'
               onRowClicked={(row, _) => {
-                //changeChart();
                 loadReportEvents(row._id);
               }}
             />
           </div>
 
           <div className='col-sm-6 border flex-column'>
-            <div className="chart-container border">
-              <svg id="svg1" width="800" height="300"></svg>
-            </div>
+            <div className="border">
+              <div className="d-flex justify-content-center"><h3>Summary</h3> </div>
 
-            <div className="chart-container border"></div>
+              <div className='container'>
+                <form className="row g-3">
+                  <div className="col-md-6">
+                    <label htmlFor="summary-carId-input" className="form-label">Car ID</label>
+                    <input type="text" 
+                      className="form-control" 
+                      id="summary-carId-input" 
+                      readOnly={true} 
+                      value="carId">
+                    </input>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="summary-date-input" className="form-label">Date</label>
+                    <input type="text" 
+                      className="form-control" 
+                      id="summary-date-input"
+                      readOnly={true} 
+                      value="date">
+                    </input>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="summary-date-input" className="form-label">Time range</label>
+                    <input type="text" 
+                      className="form-control" 
+                      id="summary-timeRange-input"
+                      readOnly={true}
+                      value="timeRange">
+                    </input>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="summary-date-input" className="form-label">Number of events</label>
+                    <input type="text" 
+                      className="form-control" 
+                      id="summary-eventsNumber-input"
+                      readOnly={true} 
+                      value="eventsNumber">
+                    </input>
+                  </div>
+
+                  <div className="col-sm-12" style={{height: 300, overflowY: 'scroll', overflowX: 'hidden'}}>
+                    <DataTable
+                      columns={event_columns}
+                      data={events_data}
+                      onRowClicked={(row, _) => {
+                        //loadReportsByCarId(row.plates);
+                        console.log(row._id);
+                      }}
+                    />
+                  </div>
+
+                  <svg id="events-history-chart" width="800" height="300"></svg>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
       </div>
