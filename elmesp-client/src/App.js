@@ -61,8 +61,6 @@ function App() {
       .then(body => {
         const eventsList = body[0].events;
 
-        
-
         // Populate summary events table
         setEvents(eventsList);
 
@@ -70,24 +68,31 @@ function App() {
         const eventsHistoryData = eventsList.map(event => {
           return [event.timestamp, event.eventType];
         });
-
         drawChart('#events-history-chart', '', eventsHistoryData);
 
         // Filter the all events list into separate events list and states...
 
-        // TOP_SPEED chart
+        // TOP_SPEED chart ------------------------------------------------------------
         const topSpeedEvents = eventsList
           .filter(item => item.eventType === EVENT_TYPE_KEYS.TOP_SPEED)
           .map(topSpeedGenericMapper);
 
         drawGenericChart('#top-speed-events-chart', 'Top speed events', topSpeedEvents, [0, 1000], [160, 0]);
 
-        // FUEL_LEVEL chart
+        // FUEL_LEVEL chart ------------------------------------------------------------
         const fuelLevelEvents = eventsList
           .filter(item => item.eventType === EVENT_TYPE_KEYS.FUEL_LEVEL)
           .map(fuelLevelGenericMapper);
 
         drawGenericChart('#fuel-level-events-chart', 'Fuel level events', fuelLevelEvents, [0, 1000], [100, 0]);
+
+        // SPEED_DELTA chart ------------------------------------------------------------
+        const speedChangeEvents = eventsList
+          .filter(item => {
+            return (item.eventType === EVENT_TYPE_KEYS.SUDDEN_ACCELERATION || item.eventType === EVENT_TYPE_KEYS.SUDDEN_BRAKE);
+          }).map(speedDeltaGenericMapper);
+
+        drawGenericChart('#speed-delta-events-chart', 'Speed delta events', speedChangeEvents, [0, 1000], [100, -100]);
       });
   }
 
@@ -104,6 +109,16 @@ function App() {
         xValue: eventObject.timestamp,
         yValue: eventObject.fuelLevel,
         color: '#cc0000'
+    };
+  }
+
+  function speedDeltaGenericMapper(eventObject){
+    const speedDelta = eventObject.finalSpeed - eventObject.initialSpeed;
+
+    return {
+        xValue: eventObject.timestamp,
+        yValue: speedDelta,
+        color: eventObject.eventType === EVENT_TYPE_KEYS.SUDDEN_ACCELERATION ? '#f1c232' : '#733f83'
     };
   }
 
@@ -278,6 +293,8 @@ function App() {
               <svg id="top-speed-events-chart" width="800" height="300"></svg>
               
               <svg id="fuel-level-events-chart" width="800" height="300"></svg>
+
+              <svg id="speed-delta-events-chart" width="800" height="300"></svg>
             </div>
             
           </div>
