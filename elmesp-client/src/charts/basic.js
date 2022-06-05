@@ -101,17 +101,17 @@ export function drawChart(selector, title, data){
 
     // Draw a chart
     const svg2 = d3.select(selector),
-        margin = 50,
+        margin = 60,
         width = svg2.attr("width") - margin,
         height = svg2.attr("height") - margin;
 
-    const xScale = d3.scaleLinear().domain([0, 1000]).range([0, width]);
+    const xScale = d3.scaleLinear().domain([0, 900]).range([0, width]);
     const yScale = d3.scaleBand()
         .domain(eventTypeNames)
         .range([height, 0]);
 
     const g = svg2.append("g")
-        .attr("transform", "translate(" + 60 + "," + 20 + ")");
+        .attr("transform", "translate(" + 80 + "," + 40 + ")");
 
     // Title
     svg2.append('text')
@@ -148,7 +148,7 @@ export function drawChart(selector, title, data){
         .attr("cx", (d) => { return xScale(d.timestamp); } )
         .attr("cy", (d) => { return yScale(d.label); } )
         .attr("r", 3)
-        .attr("transform", "translate(" + margin + "," + margin + ")")
+        .attr("transform", "translate(" + 80 + "," + margin + ")")
         .style("fill", (d) => d.color)
 }
 

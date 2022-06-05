@@ -271,7 +271,7 @@ function App() {
                     />
                   </div>
 
-                  <svg id="events-history-chart" width="800" height="300"></svg>
+                  <svg id="events-history-chart" width="900" height="300"></svg>
 
                   <button type="button" 
                           className="btn btn-link"
@@ -290,11 +290,13 @@ function App() {
                           className="btn btn-link"
                           onClick={() => setCurrentPanel('SUMMARY')}>View summary</button>
               
-              <svg id="top-speed-events-chart" width="800" height="300"></svg>
-              
-              <svg id="fuel-level-events-chart" width="800" height="300"></svg>
+              <div style={{height: "80vh", overflowY: 'scroll', overflowX: 'hidden'}}>
+                <svg id="top-speed-events-chart" class="mb-4" width="800" height="300"></svg>
+                
+                <svg id="fuel-level-events-chart" class="mb-4" width="800" height="300"></svg>
 
-              <svg id="speed-delta-events-chart" width="800" height="300"></svg>
+                <svg id="speed-delta-events-chart" class="mb-4" width="800" height="300"></svg>
+              </div>
             </div>
             
           </div>
