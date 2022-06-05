@@ -13,9 +13,12 @@
 #define SUDDEN_ACCELERATION 4
 #define SUDDEN_BRAKE 5
 #define TOP_SPEED 6
+#define TOP_RPM 7
 
+// Define constants for events thresholds
 #define MAX_TOP_SPEED 60
-#define MAX_SUDDEN_DELTA 10
+#define MAX_SUDDEN_DELTA 20
+#define MAX_TOP_RPM 1500
 
 int globalTrackedAddress = 0;
 int globalTrackedSeconds = 0;
@@ -55,7 +58,7 @@ const char* password = "AsquilinFantasma2022";
 //const char* ssid = "Poco Mk";
 //const char* password = "lechuga.123";
 
-const char* REPORTS_ENDPOINT = "http://192.168.68.113/api/reports";
+const char* REPORTS_ENDPOINT = "http://192.168.68.117:3001/api/reports";
 
 const int OPERATION_MODE_PIN_1 = 34;
 const int LED_PIN = 32;
@@ -84,6 +87,9 @@ void setup() {
   } else {
     currentMode = WIFI;
   }
+
+  // Hardcode 'currentMode'
+  // currentMode = MEMORY_CLEAR;
 
   // Log current mode ----------------------------------------------
   Serial.print("STATUS: Current mode: ");
@@ -128,6 +134,7 @@ void loop(){
     case MONITOR:
       monitorPeriodicEvents();
       monitorSpeedEvents();
+      monitorRPMEvents();
       break;
     case WIFI:
       noOp();
@@ -176,11 +183,23 @@ void monitorSpeedEvents(){
     }
 
     // Evaluate current speed to check TOP_SPEED condition
-    if(currentSpeed >= MAX_TOP_SPEED){
+    if (currentSpeed >= MAX_TOP_SPEED){
       registerEvent(TOP_SPEED, currentSpeed);
     }
 
     previousSpeed = currentSpeed;
+  }
+}
+
+void monitorRPMEvents(){
+  int currentRPM = getCurrentRPM();
+
+  if(currentRPM != -1){
+    // We have a valid RPM
+
+    if (currentRPM >= MAX_TOP_RPM){
+      registerEvent(TOP_RPM, currentRPM);
+    }
   }
 }
 
@@ -223,6 +242,9 @@ int getCurrentFuelLevel(){
   return getObdParameter(elmReader.fuelLevel());
 }
 
+int getCurrentRPM(){
+  return getObdParameter(elmReader.rpm());
+}
 
 
 int getElapsedSeconds(){
@@ -417,7 +439,7 @@ String buildPostJson(){
 String readMemoryEvents(){
   Serial.println("STATUS: Reading events from memory...");
   
-  String fullJson= "{\"carId\": \"JHZ9036\", \"events\": [";
+  String fullJson= "{\"carId\": \"MRN1228\", \"events\": [";
 
   // Read first event
   String nextEventJson = readNextEvent();
@@ -515,6 +537,16 @@ String readNextEvent(){
       eventJson += String(topSpeed);
 
       globalTrackedReadAddress += sizeof(topSpeed);
+      break;
+    case TOP_RPM:
+      // Read 4 bytes topRPM parameter
+      int topRPM;
+      EEPROM.get(globalTrackedReadAddress, topRPM);
+
+      eventJson += ", \"topRPM\":";
+      eventJson += String(topRPM);
+
+      globalTrackedReadAddress += sizeof(topRPM);
       break;
   }
 

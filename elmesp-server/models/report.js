@@ -24,6 +24,10 @@ const EventSchema = new mongoose.Schema({
     topSpeed: {
         type: Number,
         required: false
+    },
+    topRPM: {
+        type: Number,
+        required: false
     }
 });
 

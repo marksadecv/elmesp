@@ -15,7 +15,8 @@ const EVENT_TYPES = [
   {name: 'FUEL LEVEL', value: 3},
   {name: 'SUDDEN ACCELERATION', value: 4},
   {name: 'SUDDEN BRAKE', value: 5},
-  {name: 'TOP SPEED', value: 6}
+  {name: 'TOP SPEED', value: 6},
+  {name: 'TOP RPM', value: 7}
 ];
 
 const EVENT_TYPE_KEYS = {
@@ -25,6 +26,7 @@ const EVENT_TYPE_KEYS = {
   SUDDEN_ACCELERATION: 4,
   SUDDEN_BRAKE: 5,
   TOP_SPEED: 6,
+  TOP_RPM: 7,
 };
 
 function App() {
@@ -156,6 +158,8 @@ function App() {
         return eventObject.initialSpeed;
       case 6:
         return eventObject.topSpeed;
+      case 7:
+          return eventObject.topRPM;
       default:
         return '-';
     }
