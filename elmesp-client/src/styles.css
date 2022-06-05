@@ -13,3 +13,11 @@
 .div2 {
     background-color: rgba(31, 30, 30, 0.075);
 }
+
+.elmesp-hidden {
+    display: none;
+}
+
+.elmesp-block {
+    display: block;
+}

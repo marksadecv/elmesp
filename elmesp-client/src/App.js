@@ -32,6 +32,7 @@ function App() {
   const [reports_data, setReports] = useState([]);
   const [events_data, setEvents] = useState([]);
   const [stats_data, setStats] = useState(loadReportStats);
+  const [current_panel, setCurrentPanel] = useState('');
   
   function loadCars() {
     fetch('/api/reports/distinct?field=carId')
@@ -194,14 +195,16 @@ function App() {
               data={reports_data}
               title='Select a report'
               onRowClicked={(row, _) => {
-                loadReportEvents(row._id);
+                setCurrentPanel('SUMMARY');
                 loadReportStats(row._id);
+                loadReportEvents(row._id);
               }}
             />
           </div>
 
           <div className='col-sm-6 border flex-column'>
-            <div className="border">
+            
+            <div className={current_panel === 'SUMMARY' ? 'elmesp-block' : 'elmesp-hidden'}>
               <div className="d-flex justify-content-center"><h3>Summary</h3> </div>
 
               <div className='container'>
@@ -250,23 +253,33 @@ function App() {
                     <DataTable
                       columns={event_columns}
                       data={events_data}
-                      onRowClicked={(row, _) => {
-                        //loadReportsByCarId(row.plates);
-                        console.log(row._id);
-                      }}
                     />
                   </div>
 
                   <svg id="events-history-chart" width="800" height="300"></svg>
 
-
-                  <svg id="top-speed-events-chart" width="800" height="300"></svg>
-
-
-                  <svg id="fuel-level-events-chart" width="800" height="300"></svg>
+                  <button type="button" 
+                          className="btn btn-link"
+                          onClick={() => setCurrentPanel('DETAILS')}>View details</button>
                 </form>
               </div>
             </div>
+            
+
+            <div className={current_panel === 'DETAILS' ? 'elmesp-block' : 'elmesp-hidden'}>
+              <div className="d-flex justify-content-center">
+                <h3>Details</h3>
+              </div>
+              
+              <button type="button" 
+                          className="btn btn-link"
+                          onClick={() => setCurrentPanel('SUMMARY')}>View summary</button>
+              
+              <svg id="top-speed-events-chart" width="800" height="300"></svg>
+              
+              <svg id="fuel-level-events-chart" width="800" height="300"></svg>
+            </div>
+            
           </div>
         </div>
       </div>
