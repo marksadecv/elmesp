@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DataTable from 'react-data-table-component';
 import './styles.css';
 
-import {drawChart, drawTopSpeedChart} from './charts/basic';
+import {drawChart, drawGenericChart} from './charts/basic';
 
 
 const EVENT_TYPES = [
@@ -17,6 +17,15 @@ const EVENT_TYPES = [
   {name: 'SUDDEN BRAKE', value: 5},
   {name: 'TOP SPEED', value: 6}
 ];
+
+const EVENT_TYPE_KEYS = {
+  TIME_INITIALIZATION: 1,
+  TIME_REGISTER: 2,
+  FUEL_LEVEL: 3,
+  SUDDEN_ACCELERATION: 4,
+  SUDDEN_BRAKE: 5,
+  TOP_SPEED: 6,
+};
 
 function App() {
   const [data, setData] = useState(loadCars);
@@ -63,16 +72,38 @@ function App() {
 
         drawChart('#events-history-chart', '', eventsHistoryData);
 
-
         // Filter the all events list into separate events list and states...
-        const topSpeedEvents = eventsList.filter(item => {
-          return item.eventType === 6;
-        });
 
-        console.log(topSpeedEvents);
+        // TOP_SPEED chart
+        const topSpeedEvents = eventsList
+          .filter(item => item.eventType === EVENT_TYPE_KEYS.TOP_SPEED)
+          .map(topSpeedGenericMapper);
 
-        drawTopSpeedChart('#top-speed-events-chart', '', topSpeedEvents)
+        drawGenericChart('#top-speed-events-chart', 'Top speed events', topSpeedEvents, [0, 1000], [160, 0]);
+
+        // FUEL_LEVEL chart
+        const fuelLevelEvents = eventsList
+          .filter(item => item.eventType === EVENT_TYPE_KEYS.FUEL_LEVEL)
+          .map(fuelLevelGenericMapper);
+
+        drawGenericChart('#fuel-level-events-chart', 'Fuel level events', fuelLevelEvents, [0, 1000], [100, 0]);
       });
+  }
+
+  function topSpeedGenericMapper(eventObject){
+    return {
+        xValue: eventObject.timestamp,
+        yValue: eventObject.topSpeed,
+        color: '#2986cc'
+    };
+  }
+
+  function fuelLevelGenericMapper(eventObject){
+    return {
+        xValue: eventObject.timestamp,
+        yValue: eventObject.fuelLevel,
+        color: '#cc0000'
+    };
   }
 
   function loadReportStats(reportId) {
@@ -230,6 +261,9 @@ function App() {
 
 
                   <svg id="top-speed-events-chart" width="800" height="300"></svg>
+
+
+                  <svg id="fuel-level-events-chart" width="800" height="300"></svg>
                 </form>
               </div>
             </div>
