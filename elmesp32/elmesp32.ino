@@ -16,9 +16,9 @@
 #define TOP_RPM 7
 
 // Define constants for events thresholds
-#define MAX_TOP_SPEED 60
-#define MAX_SUDDEN_DELTA 20
-#define MAX_TOP_RPM 1500
+#define MAX_TOP_SPEED 80
+#define MAX_SUDDEN_DELTA 35
+#define MAX_TOP_RPM 3000
 
 int globalTrackedAddress = 0;
 int globalTrackedSeconds = 0;
@@ -102,7 +102,7 @@ void setup() {
   // Main operations --------------------------------------------------------
   switch(currentMode){
     case MEMORY_READ:
-      //readMemory(30, 100);
+      //readMemory(200, 100);
       readMemoryEvents();
       break;
     case MEMORY_CLEAR:
@@ -444,8 +444,11 @@ String readMemoryEvents(){
   // Read first event
   String nextEventJson = readNextEvent();
   
-  // Include the event only when it contains data
-  while(nextEventJson.length() > 0){
+  // Include the event only when it contains data and we are reading under the max limit
+  while(nextEventJson.length() > 0 && globalTrackedReadAddress < EEPROM_SIZE){
+    //Serial.print("STATUS: Reading ");
+    //Serial.println(String(globalTrackedReadAddress));
+
     fullJson += nextEventJson + ",";
     nextEventJson = readNextEvent();
   }
@@ -480,6 +483,7 @@ String readNextEvent(){
   eventJson += String(timestamp) + ",";
   
   globalTrackedReadAddress += sizeof(timestamp);
+
 
   // Read 1 byte eventType --------------------------------
   byte eventType;
