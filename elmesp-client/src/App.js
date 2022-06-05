@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DataTable from 'react-data-table-component';
 import './styles.css';
 
-import { drawChart } from './charts/basic';
+import {drawChart, drawTopSpeedChart} from './charts/basic';
 
 
 const EVENT_TYPES = [
@@ -51,16 +51,27 @@ function App() {
       .then(body => {
         const eventsList = body[0].events;
 
+        
+
+        // Populate summary events table
+        setEvents(eventsList);
+
+        // Plot the events history
         const eventsHistoryData = eventsList.map(event => {
           return [event.timestamp, event.eventType];
         });
 
-
-        // Populate summary events table
-        setEvents(body[0].events)
-
-        // Plot the events history
         drawChart('#events-history-chart', '', eventsHistoryData);
+
+
+        // Filter the all events list into separate events list and states...
+        const topSpeedEvents = eventsList.filter(item => {
+          return item.eventType === 6;
+        });
+
+        console.log(topSpeedEvents);
+
+        drawTopSpeedChart('#top-speed-events-chart', '', topSpeedEvents)
       });
   }
 
@@ -216,6 +227,9 @@ function App() {
                   </div>
 
                   <svg id="events-history-chart" width="800" height="300"></svg>
+
+
+                  <svg id="top-speed-events-chart" width="800" height="300"></svg>
                 </form>
               </div>
             </div>

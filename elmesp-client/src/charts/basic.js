@@ -33,7 +33,7 @@ const EVENT_TYPES_MAP = {
     }
 };
 
-// Mapping example [30, 'TOP_SPEED', '#CC0000']
+// Mapping example {timestamp: 30, label: 'TOP_SPEED', color: '#CC0000'}
 function eventMapper([timestamp, eventType]){
     //return [timestamp, EVENT_TYPES_MAP[eventType].label, EVENT_TYPES_MAP[eventType].color];
     return {
@@ -41,6 +41,58 @@ function eventMapper([timestamp, eventType]){
         label: EVENT_TYPES_MAP[eventType].label,
         color: EVENT_TYPES_MAP[eventType].color
     };
+}
+
+export function drawTopSpeedChart(selector, title, data){
+    const chartSvg = d3.select(selector),
+        margin = 50,
+        width = chartSvg.attr("width") - margin,
+        height = chartSvg.attr("height") - margin;
+
+    const xScale = d3.scaleLinear().domain([0, 1000]).range([0, width]);
+    const yScale = d3.scaleLinear().domain([160, 0]).range([0, height]);
+
+    const g = chartSvg.append("g")
+        .attr("transform", "translate(" + 60 + "," + 20 + ")");
+
+    // Title
+    chartSvg.append('text')
+        .attr('x', width/2 + 100)
+        .attr('y', 20)
+        .attr('text-anchor', 'middle')
+        .style('font-family', 'Helvetica')
+        .style('font-size', 20)
+        .text(title);
+
+    // X label
+    chartSvg.append('text')
+        .attr('x', width/2 + 100)
+        .attr('y', height + margin)
+        .attr('text-anchor', 'middle')
+        .style('font-family', 'Helvetica')
+        .style('font-size', 12)
+        .text('Timestamp');
+
+    // Step 6
+    g.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xScale));
+    
+    g.append("g")
+        .call(d3.axisLeft(yScale));
+
+
+    // Step 7
+    chartSvg.append('g')
+        .selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", (d) => { return xScale(d.timestamp); } )
+        .attr("cy", (d) => { return yScale(d.topSpeed); } )
+        .attr("r", 3)
+        .attr("transform", "translate(" + margin + "," + margin + ")")
+        .style("fill", "#CC0000")
 }
 
 export function drawChart(selector, title, data){

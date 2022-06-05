@@ -69,6 +69,27 @@ router.get('/distinct', async (request, response) => {
     }
 });
 
+// NOTE: Not actually used... The handling is done in the client
+router.get('/events', async (request, response) => {
+    const queryObject = url.parse(request.url, true).query;
+    console.log(queryObject.eventType);
+
+    try{
+        const reportEvents = await Report
+            .aggregate([
+                {$match: {_id: mongoose.Types.ObjectId(queryObject._id)}},
+                {$unwind: {path: '$events'}},
+                {$match: {
+                    'events.eventType': parseInt(queryObject.eventType)
+                }}
+            ]);
+
+        response.json(reportEvents);
+    } catch(error) {
+        response.status(500).json({message: error.message});
+    }
+});
+
 
 
 // Get a given report stats 
