@@ -48,61 +48,13 @@ function eventMapper([timestamp, eventType]){
     };
 }
 
-export function drawTopSpeedChart(selector, title, data){
-    const chartSvg = d3.select(selector),
-        margin = 50,
-        width = chartSvg.attr("width") - margin,
-        height = chartSvg.attr("height") - margin;
-
-    const xScale = d3.scaleLinear().domain([0, 1000]).range([0, width]);
-    const yScale = d3.scaleLinear().domain([160, 0]).range([0, height]);
-
-    const g = chartSvg.append("g")
-        .attr("transform", "translate(" + 60 + "," + 20 + ")");
-
-    // Title
-    chartSvg.append('text')
-        .attr('x', width/2 + 100)
-        .attr('y', 20)
-        .attr('text-anchor', 'middle')
-        .style('font-family', 'Helvetica')
-        .style('font-size', 20)
-        .text(title);
-
-    // X label
-    chartSvg.append('text')
-        .attr('x', width/2 + 100)
-        .attr('y', height + margin)
-        .attr('text-anchor', 'middle')
-        .style('font-family', 'Helvetica')
-        .style('font-size', 12)
-        .text('Timestamp');
-
-    // Step 6
-    g.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(xScale));
-    
-    g.append("g")
-        .call(d3.axisLeft(yScale));
-
-
-    // Step 7
-    chartSvg.append('g')
-        .selectAll("dot")
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("cx", (d) => { return xScale(d.timestamp); } )
-        .attr("cy", (d) => { return yScale(d.topSpeed); } )
-        .attr("r", 3)
-        .attr("transform", "translate(" + margin + "," + margin + ")")
-        .style("fill", "#CC0000")
-}
-
 export function drawChart(selector, title, data){
     const mappedData = data.map(eventMapper);
     const eventTypeNames = Object.values(EVENT_TYPES_MAP).map(eventDefinition => eventDefinition.label);
+
+    // Clean previous chart content
+    const previousChart = d3.select(selector);
+    previousChart.selectAll('*').remove();
 
     // Draw a chart
     const svg2 = d3.select(selector),
@@ -158,6 +110,11 @@ export function drawChart(selector, title, data){
 }
 
 export function drawGenericChart(selector, title, data, domainX, domainY) {
+    // Clean previous chart content
+    const previousChart = d3.select(selector);
+    previousChart.selectAll('*').remove();
+
+    
     const chartSvg = d3.select(selector),
         margin = 50,
         width = chartSvg.attr("width") - margin,
