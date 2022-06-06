@@ -95,6 +95,14 @@ function App() {
           }).map(speedDeltaGenericMapper);
 
         drawGenericChart('#speed-delta-events-chart', 'Speed delta events', speedChangeEvents, [0, 1000], [100, -100]);
+
+        // TOP_RPM chart ------------------------------------------------------------
+        const topRPMEvents = eventsList
+          .filter(item => {
+            return (item.eventType === EVENT_TYPE_KEYS.TOP_RPM);
+          }).map(topRPMGenericMapper);
+
+        drawGenericChart('#top-rpm-events-chart', 'Top RPM events', topRPMEvents, [0, 1000], [5000, 0]);
       });
   }
 
@@ -121,6 +129,14 @@ function App() {
         xValue: eventObject.timestamp,
         yValue: speedDelta,
         color: eventObject.eventType === EVENT_TYPE_KEYS.SUDDEN_ACCELERATION ? '#f1c232' : '#733f83'
+    };
+  }
+
+  function topRPMGenericMapper(eventObject){
+    return {
+        xValue: eventObject.timestamp,
+        yValue: eventObject.topRPM,
+        color: '#0cc000'
     };
   }
 
@@ -300,6 +316,8 @@ function App() {
                 <svg id="fuel-level-events-chart" class="mb-4" width="800" height="300"></svg>
 
                 <svg id="speed-delta-events-chart" class="mb-4" width="800" height="300"></svg>
+
+                <svg id="top-rpm-events-chart" class="mb-4" width="800" height="300"></svg>
               </div>
             </div>
             

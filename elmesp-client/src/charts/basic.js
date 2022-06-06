@@ -34,7 +34,7 @@ const EVENT_TYPES_MAP = {
     "7": {
         label: 'TOP_RPM',
         value: '7',
-        color: '#0000ff'
+        color: '#0cc000'
     }
 };
 
