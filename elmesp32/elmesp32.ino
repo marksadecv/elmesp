@@ -16,8 +16,12 @@
 #define TOP_RPM 7
 
 // Define constants for events thresholds
-#define MAX_TOP_SPEED 80
-#define MAX_SUDDEN_DELTA 35
+#define MIN_TOP_SPEED 80
+#define MAX_TOP_SPEED 140
+
+#define MIN_SUDDEN_DELTA 35
+#define MAX_SUDDEN_DELTA 60
+
 #define MAX_TOP_RPM 3000
 
 int globalTrackedAddress = 0;
@@ -173,17 +177,17 @@ void monitorSpeedEvents(){
       // We have a valid previous speed. Calculate delta speed and evaluate SUDDEN change conditions
       int deltaSpeed = currentSpeed - previousSpeed;
       
-      if(deltaSpeed >= MAX_SUDDEN_DELTA){
+      if(deltaSpeed >= MIN_SUDDEN_DELTA && deltaSpeed <= MAX_SUDDEN_DELTA){
         registerEvent(SUDDEN_ACCELERATION, previousSpeed, currentSpeed);
       }
 
-      if(deltaSpeed <= (MAX_SUDDEN_DELTA * -1)){
+      if(deltaSpeed <= (MIN_SUDDEN_DELTA * -1) && deltaSpeed >= (MAX_SUDDEN_DELTA * -1)){
         registerEvent(SUDDEN_BRAKE, previousSpeed, currentSpeed);
       }
     }
 
     // Evaluate current speed to check TOP_SPEED condition
-    if (currentSpeed >= MAX_TOP_SPEED){
+    if (currentSpeed >= MIN_TOP_SPEED && currentSpeed <= MAX_TOP_SPEED){
       registerEvent(TOP_SPEED, currentSpeed);
     }
 
