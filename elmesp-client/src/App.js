@@ -299,7 +299,7 @@ function App() {
                     />
                   </div>
 
-                  <svg id="events-history-chart" width="900" height="300"></svg>
+                  <svg id="events-history-chart" className='border' width="900" height="300"></svg>
 
                   <button type="button" 
                           className="btn btn-link"
@@ -319,13 +319,13 @@ function App() {
                           onClick={() => setCurrentPanel('SUMMARY')}>View summary</button>
               
               <div style={{height: "80vh", overflowY: 'scroll', overflowX: 'hidden'}}>
-                <svg id="top-speed-events-chart" className="mb-4" width="800" height="300"></svg>
+                <svg id="top-speed-events-chart" className="mb-4 border" width="900" height="300"></svg>
                 
-                <svg id="fuel-level-events-chart" className="mb-4" width="800" height="300"></svg>
+                <svg id="fuel-level-events-chart" className="mb-4 border" width="900" height="300"></svg>
 
-                <svg id="speed-delta-events-chart" className="mb-4" width="800" height="300"></svg>
+                <svg id="speed-delta-events-chart" className="mb-4 border" width="900" height="300"></svg>
 
-                <svg id="top-rpm-events-chart" className="mb-4" width="800" height="300"></svg>
+                <svg id="top-rpm-events-chart" className="mb-4 border" width="900" height="300"></svg>
               </div>
             </div>
             
