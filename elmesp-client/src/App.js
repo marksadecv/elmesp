@@ -210,7 +210,15 @@ function App() {
 
   // Page render ---------------------
   return (
-      <div className="elmesp-container">
+      <div>
+
+        <div className='row'>
+          <div className='col-sm-12' style={{height: 50, backgroundColor: 'black'}}>
+            <img src='/logo.png' alt='logo' width="45" height="45"></img>
+            
+              <span className='h3 elmesp-title-text elmesp-vertical-align-middle'>ElmESP</span>
+          </div>
+        </div>
 
         <div className='row'>
           <div className='col-sm-3 border'>
@@ -311,13 +319,13 @@ function App() {
                           onClick={() => setCurrentPanel('SUMMARY')}>View summary</button>
               
               <div style={{height: "80vh", overflowY: 'scroll', overflowX: 'hidden'}}>
-                <svg id="top-speed-events-chart" class="mb-4" width="800" height="300"></svg>
+                <svg id="top-speed-events-chart" className="mb-4" width="800" height="300"></svg>
                 
-                <svg id="fuel-level-events-chart" class="mb-4" width="800" height="300"></svg>
+                <svg id="fuel-level-events-chart" className="mb-4" width="800" height="300"></svg>
 
-                <svg id="speed-delta-events-chart" class="mb-4" width="800" height="300"></svg>
+                <svg id="speed-delta-events-chart" className="mb-4" width="800" height="300"></svg>
 
-                <svg id="top-rpm-events-chart" class="mb-4" width="800" height="300"></svg>
+                <svg id="top-rpm-events-chart" className="mb-4" width="800" height="300"></svg>
               </div>
             </div>
             
