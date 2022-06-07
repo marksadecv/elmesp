@@ -5,3 +5,5 @@ Requirements:
 - Nodejs
 - Mongodb
 - Arduino IDE with ESP32 board support
+
+![Alt text](elmesp-diagram.png?raw=true "ElmESP diagram")
