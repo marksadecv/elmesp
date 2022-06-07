@@ -88,7 +88,7 @@ export function drawChart(selector, title, data){
         .style('font-size', 12)
         .text('Timestamp');
 
-    // Step 6
+    // Generate scales for each axis
     g.append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(xScale));
@@ -96,7 +96,7 @@ export function drawChart(selector, title, data){
     g.append("g")
         .call(d3.axisLeft(yScale));
 
-    // Step 7
+    // Circle items with data
     svg2.append('g')
         .selectAll("dot")
         .data(mappedData)
@@ -109,7 +109,7 @@ export function drawChart(selector, title, data){
         .style("fill", (d) => d.color)
 }
 
-export function drawGenericChart(selector, title, data, domainX, domainY) {
+export function drawGenericChart(selector, title, data, domainX, domainY, labelY) {
     // Clean previous chart content
     const previousChart = d3.select(selector);
     previousChart.selectAll('*').remove();
@@ -124,7 +124,7 @@ export function drawGenericChart(selector, title, data, domainX, domainY) {
     const yScale = d3.scaleLinear().domain(domainY).range([0, height]);
 
     const g = chartSvg.append("g")
-        .attr("transform", "translate(" + 40 + "," + 40 + ")");
+        .attr("transform", "translate(" + 60 + "," + 40 + ")");
 
     // Title
     chartSvg.append('text')
@@ -144,7 +144,15 @@ export function drawGenericChart(selector, title, data, domainX, domainY) {
         .style('font-size', 12)
         .text('Timestamp');
 
-    // Step 6
+    // Y label
+    chartSvg.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('transform', 'translate(20,' + (height*0.75) + ')rotate(-90)')
+        .style('font-family', 'Helvetica')
+        .style('font-size', 12)
+        .text(labelY);
+
+    // Generate scales for each axis
     g.append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(xScale));
@@ -153,7 +161,7 @@ export function drawGenericChart(selector, title, data, domainX, domainY) {
         .call(d3.axisLeft(yScale));
 
 
-    // Step 7
+    // Circle items with data
     chartSvg.append('g')
         .selectAll("dot")
         .data(data)
@@ -162,6 +170,6 @@ export function drawGenericChart(selector, title, data, domainX, domainY) {
         .attr("cx", (d) => { return xScale(d.xValue); } )
         .attr("cy", (d) => { return yScale(d.yValue); } )
         .attr("r", 3)
-        .attr("transform", "translate(" + 40 + "," + 40 + ")")
+        .attr("transform", "translate(" + 60 + "," + 40 + ")")
         .style("fill", (d) => d.color);
 }

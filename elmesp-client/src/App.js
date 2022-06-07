@@ -79,14 +79,14 @@ function App() {
           .filter(item => item.eventType === EVENT_TYPE_KEYS.TOP_SPEED)
           .map(topSpeedGenericMapper);
 
-        drawGenericChart('#top-speed-events-chart', 'Top speed events', topSpeedEvents, [0, 1000], [160, 0]);
+        drawGenericChart('#top-speed-events-chart', 'Top speed events', topSpeedEvents, [0, 1000], [160, 0], 'Km/h');
 
         // FUEL_LEVEL chart ------------------------------------------------------------
         const fuelLevelEvents = eventsList
           .filter(item => item.eventType === EVENT_TYPE_KEYS.FUEL_LEVEL)
           .map(fuelLevelGenericMapper);
 
-        drawGenericChart('#fuel-level-events-chart', 'Fuel level events', fuelLevelEvents, [0, 1000], [100, 0]);
+        drawGenericChart('#fuel-level-events-chart', 'Fuel level events', fuelLevelEvents, [0, 1000], [100, 0], 'Percentage');
 
         // SPEED_DELTA chart ------------------------------------------------------------
         const speedChangeEvents = eventsList
@@ -94,7 +94,7 @@ function App() {
             return (item.eventType === EVENT_TYPE_KEYS.SUDDEN_ACCELERATION || item.eventType === EVENT_TYPE_KEYS.SUDDEN_BRAKE);
           }).map(speedDeltaGenericMapper);
 
-        drawGenericChart('#speed-delta-events-chart', 'Speed delta events', speedChangeEvents, [0, 1000], [100, -100]);
+        drawGenericChart('#speed-delta-events-chart', 'Speed delta events', speedChangeEvents, [0, 1000], [100, -100], 'Km/h');
 
         // TOP_RPM chart ------------------------------------------------------------
         const topRPMEvents = eventsList
@@ -102,7 +102,7 @@ function App() {
             return (item.eventType === EVENT_TYPE_KEYS.TOP_RPM);
           }).map(topRPMGenericMapper);
 
-        drawGenericChart('#top-rpm-events-chart', 'Top RPM events', topRPMEvents, [0, 1000], [5000, 0]);
+        drawGenericChart('#top-rpm-events-chart', 'Top RPM events', topRPMEvents, [0, 1000], [5000, 0], 'RPM');
       });
   }
 
