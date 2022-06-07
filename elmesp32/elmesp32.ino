@@ -109,13 +109,13 @@ void setup() {
       clearMemory();
       break;
     case MONITOR:
+      clearMemory();
       registerEvent(TIME_INITIALIZATION);
       connectToElm();
       break;
     case WIFI:
       connectToWifi();
       postRequest();
-      //getRequest();
       break;
   }
 
