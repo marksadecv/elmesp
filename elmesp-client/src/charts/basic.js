@@ -60,7 +60,7 @@ export function drawChart(selector, title, data){
     const svg2 = d3.select(selector),
         margin = 60,
         width = svg2.attr("width") - margin,
-        height = svg2.attr("height") - margin;
+        height = svg2.attr("height") - margin - 40; // Leave space for the X label
 
     const xScale = d3.scaleLinear().domain([0, 900]).range([0, width]);
     const yScale = d3.scaleBand()
@@ -68,7 +68,7 @@ export function drawChart(selector, title, data){
         .range([height, 0]);
 
     const g = svg2.append("g")
-        .attr("transform", "translate(" + 80 + "," + 40 + ")");
+        .attr("transform", "translate(" + 140 + "," + 40 + ")");
 
     // Title
     svg2.append('text')
@@ -82,7 +82,7 @@ export function drawChart(selector, title, data){
     // X label
     svg2.append('text')
         .attr('x', width/2 + 100)
-        .attr('y', height + margin)
+        .attr('y', height + margin + 20)
         .attr('text-anchor', 'middle')
         .style('font-family', 'Helvetica')
         .style('font-size', 12)
@@ -105,7 +105,7 @@ export function drawChart(selector, title, data){
         .attr("cx", (d) => { return xScale(d.timestamp); } )
         .attr("cy", (d) => { return yScale(d.label); } )
         .attr("r", 3)
-        .attr("transform", "translate(" + 80 + "," + margin + ")")
+        .attr("transform", "translate(" + 140 + "," + 55 + ")")
         .style("fill", (d) => d.color)
 }
 
@@ -116,15 +116,15 @@ export function drawGenericChart(selector, title, data, domainX, domainY) {
 
     
     const chartSvg = d3.select(selector),
-        margin = 50,
+        margin = 60,
         width = chartSvg.attr("width") - margin,
-        height = chartSvg.attr("height") - margin;
+        height = chartSvg.attr("height") - margin - 40; // Leave space for the X label
 
     const xScale = d3.scaleLinear().domain(domainX).range([0, width]);
     const yScale = d3.scaleLinear().domain(domainY).range([0, height]);
 
     const g = chartSvg.append("g")
-        .attr("transform", "translate(" + 60 + "," + 20 + ")");
+        .attr("transform", "translate(" + 40 + "," + 40 + ")");
 
     // Title
     chartSvg.append('text')
@@ -138,7 +138,7 @@ export function drawGenericChart(selector, title, data, domainX, domainY) {
     // X label
     chartSvg.append('text')
         .attr('x', width/2 + 100)
-        .attr('y', height + margin)
+        .attr('y', height + margin + 20)
         .attr('text-anchor', 'middle')
         .style('font-family', 'Helvetica')
         .style('font-size', 12)
@@ -162,6 +162,6 @@ export function drawGenericChart(selector, title, data, domainX, domainY) {
         .attr("cx", (d) => { return xScale(d.xValue); } )
         .attr("cy", (d) => { return yScale(d.yValue); } )
         .attr("r", 3)
-        .attr("transform", "translate(" + margin + "," + margin + ")")
+        .attr("transform", "translate(" + 40 + "," + 40 + ")")
         .style("fill", (d) => d.color);
 }
