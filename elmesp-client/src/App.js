@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DataTable from 'react-data-table-component';
 import './styles.css';
 
-import {drawChart, drawGenericChart} from './charts/basic';
+import {drawSummaryChart, drawGenericChart} from './charts/elmesp-charter';
 
 
 const EVENT_TYPES = [
@@ -70,7 +70,7 @@ function App() {
         const eventsHistoryData = eventsList.map(event => {
           return [event.timestamp, event.eventType];
         });
-        drawChart('#events-history-chart', '', eventsHistoryData);
+        drawSummaryChart('#events-history-chart', '', eventsHistoryData);
 
         // Filter the all events list into separate events list and states...
 

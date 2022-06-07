@@ -48,7 +48,7 @@ function eventMapper([timestamp, eventType]){
     };
 }
 
-export function drawChart(selector, title, data){
+export function drawSummaryChart(selector, title, data){
     const mappedData = data.map(eventMapper);
     const eventTypeNames = Object.values(EVENT_TYPES_MAP).map(eventDefinition => eventDefinition.label);
 
