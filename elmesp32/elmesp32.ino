@@ -155,7 +155,7 @@ void monitorPeriodicEvents(){
       // We have a valid FUEL_LEVEL value
       
       // Register events and consider the interval completed
-      registerEvent(TIME_REGISTER);
+      // registerEvent(TIME_REGISTER);
       registerEvent(FUEL_LEVEL, currentFuelLevel);
 
       // Update the tracked global seconds
