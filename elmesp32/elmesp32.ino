@@ -56,13 +56,14 @@ const char *MODE_NAMES[4] = {
 int currentMode = MONITOR;
 
 // Wifi credentials (ESP32 does not support 5GHz WiFi networks)
-const char* ssid = "THE RISING SUN";
-const char* password = "AsquilinFantasma2022";
+//const char* ssid = "THE RISING SUN";
+//const char* password = "AsquilinFantasma2022";
 
-//const char* ssid = "Poco Mk";
-//const char* password = "lechuga.123";
+const char* ssid = "Poco Mk";
+const char* password = "lechuga.123";
 
-const char* REPORTS_ENDPOINT = "http://192.168.68.117:3001/api/reports";
+//const char* REPORTS_ENDPOINT = "http://192.168.68.117:3001/api/reports";
+const char* REPORTS_ENDPOINT = "http://192.168.22.22:3001/api/reports";
 
 const int OPERATION_MODE_PIN_1 = 34;
 const int LED_PIN = 32;
