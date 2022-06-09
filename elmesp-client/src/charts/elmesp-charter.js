@@ -62,7 +62,7 @@ export function drawSummaryChart(selector, title, data){
         width = svg2.attr("width") - margin,
         height = svg2.attr("height") - margin - 40; // Leave space for the X label
 
-    const xScale = d3.scaleLinear().domain([0, 900]).range([0, width]);
+    const xScale = d3.scaleLinear().domain([0, 1800]).range([0, width]);
     const yScale = d3.scaleBand()
         .domain(eventTypeNames)
         .range([height, 0]);
